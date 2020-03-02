@@ -3,11 +3,13 @@ from time import sleep
 from time import clock
 import sys
 
-from urllib.request import HTTPError
+#from urllib.request import HTTPError
+from urllib2 import HTTPError
 
 import tools
 from bs4 import BeautifulSoup
-from urllib.request import quote
+#from urllib.request import quote
+from urllib import quote
 
 last = None
 

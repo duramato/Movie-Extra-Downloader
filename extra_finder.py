@@ -58,6 +58,7 @@ class ExtraFinder:
             if youtube_video['view_count'] < 100:
                 youtube_video['view_count'] = 100
 
+	    #print(youtube_video['average_rating'])
             youtube_video['adjusted_rating'] = \
                 youtube_video['average_rating'] * (1 - 1 / ((youtube_video['view_count'] / 60) ** 0.5))
 
@@ -84,7 +85,9 @@ class ExtraFinder:
         url_list = list()
 
         for search_index, search in self.config.searches.items():
-            query = tools.apply_query_template(search['query'], self.directory.__dict__)
+	    #print(search['query'], self.directory.__dict__)
+            query = tools.apply_query_template(search['query'], dict(self.directory.__dict__))
+	    #print(query)
             limit = int(search['limit'])
 
             if search['source'] == 'google_search':
@@ -116,14 +119,17 @@ class ExtraFinder:
                     self.youtube_videos.append(video)
                     if not video['categories']:
                         self.play_trailers.append(video)
+	#print(self.youtube_videos)
         return
 
     def filter_search_result(self):
 
         filtered_candidates = list()
-
+	#print("filtered")
+	#print(filtered_candidates)
+	#print(len(self.youtube_videos))
         for youtube_video in self.youtube_videos:
-
+	    #print(youtube_video)
             info = 'Video "' + youtube_video['webpage_url'] + '" was removed. reasons: '
             append_video = True
 
@@ -195,7 +201,7 @@ class ExtraFinder:
                             break
                 else:
                     original_title_in_video = True
-
+	    #print(self.directory.movie_original_title, youtube_video['title'].lower())
             if not original_title_in_video and not title_in_video:
                 append_video = False
                 info += 'not containing title, '
@@ -206,7 +212,8 @@ class ExtraFinder:
                 print(info[:-2] + '.')
 
         self.youtube_videos = filtered_candidates
-
+	#print("filasd")
+	#print(self.youtube_videos)
         filtered_candidates = list()
 
         for youtube_video in self.play_trailers:
@@ -274,6 +281,7 @@ class ExtraFinder:
             else:
                 print(info[:-2] + '.')
 
+	#print(filtered_candidates)
         self.play_trailers = filtered_candidates
 
     def apply_custom_filters(self):
@@ -413,14 +421,17 @@ class ExtraFinder:
 
         arguments = self.config.youtube_dl_arguments
         arguments['outtmpl'] = os.path.join(tmp_file, arguments['outtmpl'])
-        for key, value in arguments.items():
+        #print(arguments)
+	for key, value in arguments.items():
             if isinstance(value, str):
                 if value.lower() == 'false' or value.lower() == 'no':
                     arguments[key] = ''
 
         count = 0
-
+	#print(self.youtube_videos)
         for youtube_video in self.youtube_videos[:]:
+	    #print(youtube_video)
+            #print(self.config.force)
             if not self.config.force:
                 for vid_id in self.directory.record:
                     if vid_id == youtube_video['id']:
@@ -430,6 +441,7 @@ class ExtraFinder:
                 try:
                     with youtube_dl.YoutubeDL(arguments) as ydl:
                         meta = ydl.extract_info(youtube_video['webpage_url'])
+			#print(meta)
                         downloaded_videos_meta.append(meta)
                         count += 1
                         break

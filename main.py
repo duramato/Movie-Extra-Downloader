@@ -2,6 +2,10 @@ import os
 
 from extra_finder import ExtraFinder
 
+try:
+    FileNotFoundError
+except NameError:
+    FileNotFoundError = IOError
 
 def download_extra(directory, config, tmp_folder):
     def process_trailers_config(tmp_folder):
@@ -10,7 +14,7 @@ def download_extra(directory, config, tmp_folder):
         print('processing: ' + directory.name)
         finder.search()
         finder.filter_search_result()
-
+	#print(finder.youtube_videos)
         for youtube_video in finder.youtube_videos:
             print('--------------------------------------------------------------------------------------')
             print(youtube_video['webpage_url'])
@@ -18,10 +22,12 @@ def download_extra(directory, config, tmp_folder):
             print(youtube_video['format'])
             print(str(youtube_video['views_per_day']))
         print('--------------------------------------------------------------------------------------')
-        print(directory.name)
-
-        finder.apply_custom_filters()
+        #print(directory.name)
+	#print(finder.youtube_videos)
+        #finder.apply_custom_filters()
+	#print(finder.youtube_videos)
         finder.order_results()
+	#print(finder.youtube_videos)
 
         if finder.play_trailers and finder.youtube_videos and not config.disable_play_trailers:
             if 'duration' in finder.youtube_videos[0] and 'duration' in finder.play_trailers[0]:
@@ -38,7 +44,7 @@ def download_extra(directory, config, tmp_folder):
                 finder.youtube_videos = [finder.play_trailers[0]]
             else:
                 return
-
+	#print(finder.youtube_videos)
         if not finder.youtube_videos and finder.play_trailers and not config.disable_play_trailers:
             finder.youtube_videos = finder.play_trailers
 
@@ -46,12 +52,14 @@ def download_extra(directory, config, tmp_folder):
             print(youtube_video['webpage_url'] + ' : ' +
                   youtube_video['format'] +
                   ' (' + str(youtube_video['adjusted_rating']) + ')')
+	#print(finder.play_trailers)
         for youtube_video in finder.play_trailers:
             print('play trailer: ' + youtube_video['webpage_url'] + ' : ' + youtube_video['format'])
         print('--------------------------------------------------------------------------------------')
         print('downloading for: ' + directory.name)
         count = 0
         tmp_folder = os.path.join(tmp_folder, 'tmp_0')
+	print(tmp_folder)
         while True:
             try:
                 while os.listdir(tmp_folder):
@@ -61,10 +69,12 @@ def download_extra(directory, config, tmp_folder):
                         tmp_folder = tmp_folder[:-2] + '_' + str(count)
                         count += 1
                 break
-            except FileNotFoundError:
+            except:
+		print("Creating tmp dir " + tmp_folder)
                 os.mkdir(tmp_folder)
 
         downloaded_videos_meta = finder.download_videos(tmp_folder)
+	#print(downloaded_videos_meta)
         if downloaded_videos_meta:
             finder.move_videos(downloaded_videos_meta, tmp_folder)
 
@@ -94,7 +104,7 @@ def download_extra(directory, config, tmp_folder):
             print(youtube_video['format'])
             print(str(youtube_video['views_per_day']))
         print('--------------------------------------------------------------------------------------')
-        print(directory.name)
+        #print(directory.name)
 
         finder.apply_custom_filters()
         finder.order_results()
@@ -122,6 +132,8 @@ def download_extra(directory, config, tmp_folder):
                 os.mkdir(tmp_folder)
 
         downloaded_videos_meta = finder.download_videos(tmp_folder)
+	print("meta")
+	#print(downloaded_videos_meta)
         if downloaded_videos_meta:
             finder.move_videos(downloaded_videos_meta, tmp_folder)
 

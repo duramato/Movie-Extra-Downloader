@@ -1,12 +1,17 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*
+
 from _socket import timeout
-from urllib.error import HTTPError, URLError
-from urllib.request import urlopen
-from urllib.request import quote
+#from urllib.error import HTTPError, URLError
+from urllib2 import HTTPError, URLError
+#from urllib.request import urlopen
+from urllib2 import urlopen
+#from urllib.request import quote
+from urllib import quote
 import time
 import json
 import hashlib
 import os
-
 
 def hash_file(file_path):
     if not os.path.isdir(file_path):
@@ -55,6 +60,8 @@ def get_keyword_list(string):
 def get_clean_string(string):
     ret = ' ' + string.lower() + ' '
 
+    #ret = ret.decode('utf-8')
+
     ret = (ret.replace('(', '')
               .replace(')', '')
               .replace('[', '')
@@ -65,12 +72,12 @@ def get_clean_string(string):
               .replace(';', '')
               .replace('?', '')
               .replace("'", '')
-              .replace("’", '')
-              .replace("´", '')
-              .replace("`", '')
+              #.replace("’", '')
+              #.replace("´", '')
+              #.replace("`", '')
               .replace("*", ' ')
               .replace('.', ' ')
-              .replace('·', '-')
+              #.replace('·', '-')
               .replace(' -', ' ')
               .replace('- ', ' ')
               .replace('_', ' ')
@@ -174,14 +181,31 @@ def retrieve_web_page(url, page_name='page'):
 
 def apply_query_template(template, keys):
     ret = template
-    for key, value in keys.items():
-        if isinstance(value, str):
-            ret = ret.replace('{' + key + '}', value)
-        elif isinstance(value, int):
-            ret = ret.replace('{' + key + '}', str(value))
-        elif isinstance(value, float):
-            ret = ret.replace('{' + key + '}', str(value))
-
+    #for key, value in keys.items():
+	#print(value)
+	#print(key, value)
+	#value = value.decode("utf-8")
+	#if key == "movie_original_title":
+	#    continue
+     #   if isinstance(value, str):
+     #       print(value)
+     #       ret = ret.replace('{' + key + '}', value)
+     #   elif isinstance(value, int):
+     #       ret = ret.replace('{' + key + '}', str(value))
+     #   elif isinstance(value, float):
+     #       ret = ret.replace('{' + key + '}', str(value))
+     #	else:
+     #	   try:
+     #	       print(value)
+     #	       ret = ret.format(str(value))
+	       #ret = ret.replace('{' + key + '}', str(value))
+     #	   except:
+     #	       continue
+     #	   print(value)
+    keys = dict(keys.items())
+    print(keys)
+    ret = ret.format(**keys)
+    print(ret)
     return space_cleanup(ret)
 
 

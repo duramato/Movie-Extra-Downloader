@@ -66,6 +66,7 @@ class Directory(object):
     def update_movie_info(self, tmdb_api_key=None, tmdb_id=None):
         def get_info_from_directory():
             clean_name_tuple = tools.get_clean_string(self.name).split(' ')
+	    #print("clean title " + clean_name_tuple)
 
             if any(clean_name_tuple[-1] == str(year) for year in range(1896, date.today().year + 2)):
                 self.movie_release_year = int(clean_name_tuple[-1])

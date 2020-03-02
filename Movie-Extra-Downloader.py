@@ -4,12 +4,18 @@ import os
 import sys
 from directory import Directory
 import shutil
-from urllib.error import URLError, HTTPError
+#from urllib.error import URLError, HTTPError
+from urllib2 import HTTPError, URLError
 import configparser
 from _socket import timeout
 import argparse
 import tools
 import time
+
+try:
+    FileNotFoundError
+except NameError:
+    FileNotFoundError = IOError
 
 parser = argparse.ArgumentParser()
 parser.add_argument("-d", "--directory", help="directory to search extras for")
@@ -106,7 +112,7 @@ def handle_directory(folder):
                 # todo: delete all paths in the old record that are not in the new record
                 pass
 
-        except FileNotFoundError as e:
+        except IOError as e:
             print('file not found: ' + str(e))
             continue
 
@@ -122,9 +128,9 @@ def handle_directory(folder):
             print('you might have lost your internet connections. exiting')
             sys.exit()
 
-        except ConnectionResetError:
-            print('you might have lost your internet connections. exiting')
-            sys.exit()
+        #except ConnectionResetError:
+        #    print('you might have lost your internet connections. exiting')
+        #    sys.exit()
 
         except KeyboardInterrupt:
             print('exiting! keyboard interrupt.')
